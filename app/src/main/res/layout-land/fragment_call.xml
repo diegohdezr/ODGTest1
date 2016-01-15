@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#000000"
+    android:clickable="false">
+
+    <WebView
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:background="#000000">
+
+    </WebView>
+
+
+
     <LinearLayout
         android:background="#FFFFFF"
         android:layout_width="wrap_content"
@@ -11,15 +23,16 @@
         android:orientation="vertical"
         android:layout_gravity="end"
         android:gravity="center_vertical"
-        >
+        android:clickable="false">
 
         <ImageView
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:paddingBottom="10dp"
-            />
+            android:contentDescription="User Photo" />
 
         <TextView
+            android:id="@+id/call_fragment_name_text_view"
             android:paddingTop="30dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -29,6 +42,7 @@
             />
 
         <TextView
+            android:id="@+id/call_fragment_caller_id_text_view"
             android:paddingTop="10dp"
             android:paddingBottom="20dp"
             android:layout_width="wrap_content"
@@ -37,6 +51,7 @@
             tools:text="Caller ID"/>
 
         <Button
+            android:id="@+id/btn_end_call"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="End"
@@ -44,6 +59,7 @@
             android:paddingBottom="10dp"
             />
         <Button
+            android:id="@+id/btn_hold_call"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="Hold"
@@ -53,4 +69,4 @@
 
     </LinearLayout>
 
-</FrameLayout>
+</LinearLayout>
