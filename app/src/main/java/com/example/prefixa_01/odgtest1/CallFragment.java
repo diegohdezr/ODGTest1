@@ -59,8 +59,6 @@ public class CallFragment extends Fragment {
         //mCrime = new Crime();
         //UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         username = getArguments().getString(Constants.USER_NAME);
-        UUID clientId = (UUID) getArguments().getSerializable(Constants.CALL_USER);
-        mClient = ClientLab.get(getActivity()).getClient(clientId);
 
         PeerConnectionFactory.initializeAndroidGlobals(
                 this,  // Context
@@ -76,10 +74,21 @@ public class CallFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_call,container,false);
         mButtonEnd = (Button) view.findViewById(R.id.btn_end_call);
         mButtonHold = (Button) view.findViewById(R.id.btn_hold_call);
-        mButtonHold.setText("Hold");
-        mButtonEnd.setText("End");
         mCallCallerIDTextView = (TextView)view.findViewById(R.id.call_fragment_caller_id_text_view);
         mCallNameTextView = (TextView)view.findViewById(R.id.call_fragment_name_text_view);
+
+        mButtonHold.setText("Hold");
+        mButtonEnd.setText("End");
+
+        mButtonHold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hangup();
+            }
+        });
+
+
+
         mCallCallerIDTextView.setText(mClient.getmClientID());
         mCallNameTextView.setText(mClient.getmName());
 
@@ -132,9 +141,11 @@ public class CallFragment extends Fragment {
 
         // If the intent contains a number to dial, call it now that you are connected.
         //  Else, remain listening for a call.
-        connectToUser(mClient.getmName());
-
-
+        if(getArguments().containsKey(Constants.CALL_USER)){
+            UUID clientId = (UUID) getArguments().getSerializable(Constants.CALL_USER);
+            mClient = ClientLab.get(getActivity()).getClient(clientId);
+            connectToUser(mClient.getmName());
+        }
 
         return view;
     }
@@ -168,15 +179,16 @@ public class CallFragment extends Fragment {
         this.pnRTCClient.connect(user);
     }
 
-    public void hangup(View view) {
+    public void hangup(){
         this.pnRTCClient.closeAllConnections();
         endCall();
     }
 
     private void endCall() {
         FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-        transaction.detach(getParentFragment());
-        transaction.attach(new MainActivityFragment());
+        //transaction.detach(getParentFragment());
+        //transaction.attach(new MainActivityFragment());
+        transaction.remove(this);
         transaction.commit();
     }
 
