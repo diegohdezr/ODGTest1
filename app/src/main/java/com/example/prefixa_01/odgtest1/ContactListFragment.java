@@ -20,15 +20,14 @@ public class ContactListFragment extends Fragment {
 
     private RecyclerView mClientsRecyclerView;
     private ClientAdapter mAdapter;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_contact_list, container, false);
 
         mClientsRecyclerView = (RecyclerView) view.findViewById(R.id.client_recycler_view);
         mClientsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-
         updateUI();
-
         return view;
     }
 
@@ -66,7 +65,7 @@ public class ContactListFragment extends Fragment {
         @Override
         public void onClick(View v) {
             FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-            transaction.replace(R.id.fragment, ContactDataFragment.newInstance(mClient.getmID()));
+            transaction.replace(R.id.fragment, ContactDataFragment.newInstance("odg", mClient.getmID())); //TODO: username is harcoded odg
             transaction.addToBackStack(null);
             transaction.commit();
         }

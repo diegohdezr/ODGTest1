@@ -6,13 +6,14 @@
     android:background="#000000"
     android:clickable="false">
 
-    <WebView
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surface"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:background="#000000">
+        android:background="#000000"/>
 
-    </WebView>
+
 
 
 
