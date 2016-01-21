@@ -51,6 +51,14 @@
             android:layout_gravity="center"
             tools:text="Caller ID"/>
 
+        <TextView
+            android:id="@+id/call_status"
+            android:text="Connecting..."
+            android:padding="10dp"
+            android:textSize="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/btn_end_call"
             android:layout_width="match_parent"

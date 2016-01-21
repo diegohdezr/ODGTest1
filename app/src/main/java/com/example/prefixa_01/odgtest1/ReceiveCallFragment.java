@@ -63,11 +63,9 @@ public class ReceiveCallFragment extends Fragment {
                 Toast.makeText(getActivity(), "Call button clicked", Toast.LENGTH_SHORT).show();
                 FragmentManager fm = getActivity().getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                if (ft ==null){
-                    ft.replace(R.id.fragment, CallFragment.newInstance(userName, callUser));
-                    ft.addToBackStack(null);
-                    ft.commit();
-                }
+                ft.replace(R.id.fragment, CallFragment.newInstance(userName, callUser));
+                ft.addToBackStack(null);
+                ft.commit();
 
             }
         });

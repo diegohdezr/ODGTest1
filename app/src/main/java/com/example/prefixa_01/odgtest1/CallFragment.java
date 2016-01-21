@@ -1,18 +1,25 @@
 package com.example.prefixa_01.odgtest1;
 
+import android.content.Intent;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.humberto.pnwebrtc.PnPeer;
 import com.example.humberto.pnwebrtc.PnRTCClient;
 import com.example.prefixa_01.odgtest1.util.Constants;
+import com.example.prefixa_01.odgtest1.util.LogRTCListener;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.webrtc.AudioSource;
 import org.webrtc.AudioTrack;
 import org.webrtc.MediaStream;
@@ -48,6 +55,8 @@ public class CallFragment extends Fragment {
     private VideoRenderer.Callbacks localRender;
     private VideoRenderer.Callbacks remoteRender;
     private GLSurfaceView videoView;
+    private TextView mCallStatus;
+
     private boolean backPressed = false;
     private Thread  backPressedThread = null;
 
@@ -56,22 +65,28 @@ public class CallFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+
         //mCrime = new Crime();
         //UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         username = getArguments().getString(Constants.USER_NAME);
 
         PeerConnectionFactory.initializeAndroidGlobals(
-                this,  // Context
+                this.getActivity(),  // Context
                 true,  // Audio Enabled
                 true,  // Video Enabled
                 true,  // Hardware Acceleration Enabled
                 null); // Render EGL Context
 
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
+
+        Log.e("Errores", "Se asigna memoria fuera del espacio de direccion");
         View view = inflater.inflate(R.layout.fragment_call,container,false);
+
+        this.mCallStatus   = (TextView) view.findViewById(R.id.call_status);
         mButtonEnd = (Button) view.findViewById(R.id.btn_end_call);
         mButtonHold = (Button) view.findViewById(R.id.btn_hold_call);
         mCallCallerIDTextView = (TextView)view.findViewById(R.id.call_fragment_caller_id_text_view);
@@ -80,17 +95,11 @@ public class CallFragment extends Fragment {
         mButtonHold.setText("Hold");
         mButtonEnd.setText("End");
 
-        mButtonHold.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hangup();
-            }
-        });
-
-
-
-        mCallCallerIDTextView.setText(mClient.getmClientID());
-        mCallNameTextView.setText(mClient.getmName());
+        // To create our VideoRenderer, we can use the included VideoRendererGui for simplicity
+        // First we need to set the GLSurfaceView that it should render to
+        this.videoView = (GLSurfaceView) view.findViewById(R.id.gl_surface);
+        // Then we set that view, and pass a Runnable to run once the surface is ready
+        VideoRendererGui.setView(videoView, null);
 
         PeerConnectionFactory pcFactory = new PeerConnectionFactory();
         this.pnRTCClient = new PnRTCClient(Constants.PUB_KEY, Constants.SUB_KEY, this.username);
@@ -108,12 +117,6 @@ public class CallFragment extends Fragment {
         AudioSource audioSource = pcFactory.createAudioSource(this.pnRTCClient.audioConstraints());
         AudioTrack localAudioTrack = pcFactory.createAudioTrack(AUDIO_TRACK_ID, audioSource);
 
-        // To create our VideoRenderer, we can use the included VideoRendererGui for simplicity
-        // First we need to set the GLSurfaceView that it should render to
-        this.videoView = (GLSurfaceView) view.findViewById(R.id.gl_surface);
-
-        // Then we set that view, and pass a Runnable to run once the surface is ready
-        VideoRendererGui.setView(videoView, null);
 
         // Now that VideoRendererGui is ready, we can get our VideoRenderer.
         // IN THIS ORDER. Effects which is on top or bottom
@@ -128,8 +131,9 @@ public class CallFragment extends Fragment {
         mediaStream.addTrack(localVideoTrack);
         mediaStream.addTrack(localAudioTrack);
 
+
         // First attach the RTC Listener so that callback events will be triggered
-        this.pnRTCClient.attachRTCListener(null);
+        this.pnRTCClient.attachRTCListener(new DemoRTCListener());
 
         // Then attach your local media stream to the PnRTCClient.
         //  This will trigger the onLocalStream callback.
@@ -139,12 +143,20 @@ public class CallFragment extends Fragment {
         this.pnRTCClient.listenOn("Kevin");
         this.pnRTCClient.setMaxConnections(1);
 
+        mButtonHold.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hangup();
+            }
+        });
+
         // If the intent contains a number to dial, call it now that you are connected.
         //  Else, remain listening for a call.
         if(getArguments().containsKey(Constants.CALL_USER)){
-            UUID clientId = (UUID) getArguments().getSerializable(Constants.CALL_USER);
-            mClient = ClientLab.get(getActivity()).getClient(clientId);
-            connectToUser(mClient.getmName());
+            String callUser = getArguments().getString(Constants.CALL_USER);
+            mCallCallerIDTextView.setText("numero");
+            mCallNameTextView.setText(callUser);
+            connectToUser(callUser);
         }
 
         return view;
@@ -201,6 +213,58 @@ public class CallFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * LogRTCListener is used for debugging purposes, it prints all RTC messages.
+     * DemoRTC is just a Log Listener with the added functionality to append screens.
+     */
+    private class DemoRTCListener extends LogRTCListener {
+        @Override
+        public void onLocalStream(final MediaStream localStream) {
+            super.onLocalStream(localStream); // Will log values
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if (localStream.videoTracks.size() == 0) return;
+                    localStream.videoTracks.get(0).addRenderer(new VideoRenderer(localRender));
+                }
+            });
+        }
 
+        @Override
+        public void onAddRemoteStream(final MediaStream remoteStream, final PnPeer peer) {
+            super.onAddRemoteStream(remoteStream, peer); // Will log values
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getActivity(), "Connected to " + peer.getId(), Toast.LENGTH_SHORT).show();
+                    try {
+                        if (remoteStream.audioTracks.size() == 0 || remoteStream.videoTracks.size() == 0)
+                            return;
+                        mCallStatus.setVisibility(View.GONE);
+                        remoteStream.videoTracks.get(0).addRenderer(new VideoRenderer(remoteRender));
+                        VideoRendererGui.update(remoteRender, 0, 0, 100, 100, VideoRendererGui.ScalingType.SCALE_ASPECT_FILL, false);
+                        VideoRendererGui.update(localRender, 72, 65, 25, 25, VideoRendererGui.ScalingType.SCALE_ASPECT_FIT, true);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+        }
+
+
+        @Override
+        public void onPeerConnectionClosed(PnPeer peer) {
+            super.onPeerConnectionClosed(peer);
+            getActivity().runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    mCallStatus.setText("Call Ended...");
+                    mCallStatus.setVisibility(View.VISIBLE);
+                }
+            });
+            try {Thread.sleep(1500);} catch (InterruptedException e){e.printStackTrace();}
+
+        }
+    }
 
 }
