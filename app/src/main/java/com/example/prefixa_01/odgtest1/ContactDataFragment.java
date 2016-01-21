@@ -11,6 +11,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.twilio.conversations.OutgoingInvite;
+
 import java.util.UUID;
 
 /**
@@ -19,11 +21,18 @@ import java.util.UUID;
 public class ContactDataFragment extends Fragment {
     private static final String ARG_CLIENT_ID="client_id";
 
+
+    /*
+ * An OutgoingInvite represents an invitation to start or join a conversation with one or more participants
+ */
+    private OutgoingInvite outgoingInvite;
+
     private Client mClient;
     private TextView mNameTextview;
     private TextView mCallerIDTextView;
     private Button mBtn1;
     private Button mBtn2;
+
 
     @Override
     public void onCreate(Bundle savedInstanceState){
@@ -32,6 +41,7 @@ public class ContactDataFragment extends Fragment {
         //UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID clientId = (UUID) getArguments().getSerializable(ARG_CLIENT_ID);
         mClient = ClientLab.get(getActivity()).getClient(clientId);
+
     }
 
     @Override
