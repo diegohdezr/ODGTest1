@@ -50,6 +50,7 @@ public class CallFragment extends Fragment {
     private TextView mCallCallerIDTextView;
     private Button mButtonEnd;
     private Button mButtonHold;
+    LocalMedia localMedia;
     //private FrameLayout previewFrameLayout;
     private ViewGroup localContainer;
     boolean isCalling;
@@ -117,6 +118,7 @@ public class CallFragment extends Fragment {
                                     Toast.makeText(getActivity(),"Call Failed",Toast.LENGTH_SHORT).show();
                                     Log.e(TAG, e.getMessage());
                                     hangup();
+                                    MainActivity.reset();
                                 }
                             }
                         });
@@ -127,7 +129,7 @@ public class CallFragment extends Fragment {
                 //conversationStatusTextView.setText("call participant failed");
             }
         }else {//incoming call
-            LocalMedia localMedia = setupLocalMedia();
+            localMedia = setupLocalMedia();
             mCallCallerIDTextView.setText(MainActivity.receivedInvite.getInvitee().toString());
             MainActivity.receivedInvite.accept(localMedia, new ConversationCallback() {
                 @Override
@@ -210,7 +212,7 @@ public class CallFragment extends Fragment {
     private LocalMedia setupLocalMedia() {
         LocalMedia localMedia = LocalMediaFactory.createLocalMedia(localMediaListener());
         LocalVideoTrack localVideoTrack = LocalVideoTrackFactory.createLocalVideoTrack(cameraCapturer);
-
+        localMedia.addLocalVideoTrack(localVideoTrack);
         return localMedia;
     }
 
@@ -220,8 +222,9 @@ public class CallFragment extends Fragment {
             public void onLocalVideoTrackAdded(Conversation conversation, LocalVideoTrack localVideoTrack) {
                 //conversationStatusTextView.setText("onLocalVideoTrackAdded");
                 localVideoRenderer = new VideoViewRenderer(getActivity(), localContainer);
+
                 localVideoTrack.addRenderer(localVideoRenderer);
-                //myfragment.setrenderer(localVideoRenderer);
+
             }
 
             @Override

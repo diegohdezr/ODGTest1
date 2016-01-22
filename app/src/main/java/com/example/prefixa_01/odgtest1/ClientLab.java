@@ -23,8 +23,11 @@ public class ClientLab {
 
     private ClientLab(Context context){
         mClients = new ArrayList<>();
-
-        for(int i = 0; i<100; i++){
+        Client myclient = new Client();
+        myclient.setmName("unitzsche");
+        myclient.setmClientID("unitzsche");
+        mClients.add(myclient);
+        for(int i = 1; i<100; i++){
             Client client = new Client();
             client.setmName("Client #" + i);
             client.setmClientID("+12551234567");
