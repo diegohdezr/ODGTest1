@@ -2,6 +2,7 @@ package com.example.prefixa_01.odgtest1;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,22 @@ public class ReceiveCallFragment extends Fragment {
         nameTextView = (TextView) view.findViewById(R.id.name);
         nameTextView.setText(MainActivity.receivedInvite.getInvitee().toString());
 
+        acceptBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
+                transaction.replace(R.id.fragment, CallFragment.newInstance(false));
+                transaction.addToBackStack(null);
+                transaction.commit();
+            }
+        });
+
+        rejectBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.reset();
+            }
+        });
 
         return view;
 

@@ -51,7 +51,7 @@ public class MainActivity extends FragmentActivity{
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
 
-    private static final String ACCESS_TOKEN = "TWILIO_ACCESS_TOKEN";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCIsICJjdHkiOiAidHdpbGlvLWZwYTt2PTEifQ.eyJpc3MiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZCIsICJncmFudHMiOiB7InJ0YyI6IHsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6ICJWUzNlZjBlNjEzM2VlMzYyNjIzZDJlMWY4YmI2N2Y4ZTg2In0sICJpZGVudGl0eSI6ICJnbGVhc29uLmdsZW53b29kIn0sICJqdGkiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZC0xNDUzNDkwMTM1IiwgInN1YiI6ICJBQzgxYzdkZDY5NTk1M2VlOTg3NjVhM2ZkMGNiNzNjNzViIiwgImV4cCI6IDE0NTM0OTM3MzV9.obWhz_Wh5B0-Np1Gq6mCZxyARrjx3kAc6p6Vq-mo5Y8";
 
     /*
      * Twilio Conversations Client allows a client to create or participate in a conversation.
@@ -322,6 +322,7 @@ public class MainActivity extends FragmentActivity{
             fm.popBackStack();
         }
     }
+
     private boolean checkPermissionForCameraAndMicrophone(){
         int resultCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int resultMic = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);

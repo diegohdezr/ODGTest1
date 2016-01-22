@@ -59,7 +59,7 @@ public class ContactDataFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment, CallFragment.newInstance(mClient.getmID(),true));
+                transaction.replace(R.id.fragment, CallFragment.newInstance(mClient.getmID(), true));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }
@@ -77,7 +77,23 @@ public class ContactDataFragment extends Fragment {
             }
         });
 
+        mBtn2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.fm.popBackStack();
+            }
+        });
 
+        mBtn2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    v.setBackgroundColor(Color.rgb(255, 165, 0));
+                } else {
+                    v.setBackgroundColor(Color.rgb(255, 255, 255));
+                }
+            }
+        });
         return v;
     }
 
