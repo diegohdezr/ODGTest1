@@ -59,7 +59,7 @@ public class ContactDataFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 FragmentTransaction transaction = getActivity().getSupportFragmentManager().beginTransaction();
-                transaction.replace(R.id.fragment, CallFragment.newInstance(mClient.getmID()));
+                transaction.replace(R.id.fragment, CallFragment.newInstance(mClient.getmID(),true));
                 transaction.addToBackStack(null);
                 transaction.commit();
             }

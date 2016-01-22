@@ -16,6 +16,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -23,10 +24,12 @@ import com.twilio.common.TwilioAccessManager;
 import com.twilio.common.TwilioAccessManagerFactory;
 import com.twilio.common.TwilioAccessManagerListener;
 import com.twilio.conversations.AudioOutput;
+import com.twilio.conversations.AudioTrack;
 import com.twilio.conversations.CameraCapturer;
 import com.twilio.conversations.CameraCapturerFactory;
 import com.twilio.conversations.Conversation;
 import com.twilio.conversations.ConversationException;
+import com.twilio.conversations.ConversationListener;
 import com.twilio.conversations.ConversationsClient;
 import com.twilio.conversations.ConversationsClientListener;
 import com.twilio.conversations.IncomingInvite;
@@ -34,8 +37,13 @@ import com.twilio.conversations.LocalMedia;
 import com.twilio.conversations.LocalMediaFactory;
 import com.twilio.conversations.LocalVideoTrack;
 import com.twilio.conversations.LocalVideoTrackFactory;
+import com.twilio.conversations.MediaTrack;
 import com.twilio.conversations.OutgoingInvite;
+import com.twilio.conversations.Participant;
+import com.twilio.conversations.ParticipantListener;
 import com.twilio.conversations.TwilioConversations;
+import com.twilio.conversations.VideoRendererObserver;
+import com.twilio.conversations.VideoTrack;
 import com.twilio.conversations.VideoViewRenderer;
 
 public class MainActivity extends FragmentActivity{
@@ -58,13 +66,14 @@ public class MainActivity extends FragmentActivity{
     /*
      * An OutgoingInvite represents an invitation to start or join a conversation with one or more participants
      */
-    private OutgoingInvite outgoingInvite;
+    public static OutgoingInvite outgoingInvite;
     /*
      * A VideoViewRenderer receives frames from a local or remote video track and renders the frames to a provided view
      */
 
+    public static IncomingInvite receivedInvite;
     private TwilioAccessManager accessManager;
-
+    public static android.support.v4.app.FragmentManager fm;
 
 
     @Override
@@ -89,7 +98,7 @@ public class MainActivity extends FragmentActivity{
          */
         initializeTwilioSdk();
 
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
 
         MainActivityFragment myFragment = new MainActivityFragment();
@@ -183,12 +192,17 @@ public class MainActivity extends FragmentActivity{
 
             @Override
             public void onIncomingInvite(ConversationsClient conversationsClient, IncomingInvite incomingInvite) {
-               /*conversationStatusTextView.setText("onIncomingInvite");
+               //conversationStatusTextView.setText("onIncomingInvite");
                 if (conversation == null) {
-                    showInviteDialog(incomingInvite);
+                    receivedInvite = incomingInvite;
+                    FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+                    transaction.replace(R.id.fragment, ReceiveCallFragment.newInstance());
+                    transaction.addToBackStack(null);
+                    transaction.commit();
+                    //showInviteDialog(incomingInvite);
                 } else {
                     Log.w(TAG, String.format("Conversation in progress. Invite from %s ignored", incomingInvite.getInvitee()));
-                }*/
+                }
             }
 
             @Override
@@ -219,12 +233,95 @@ public class MainActivity extends FragmentActivity{
             }
         };
     }
+
+
     /*
      * Helper methods
      */
 
+    public static ConversationListener conversationListener() {
+        return new ConversationListener() {
+            @Override
+            public void onParticipantConnected(Conversation conversation, Participant participant) {
+                //conversationStatusTextView.setText("onParticipantConnected " + participant.getIdentity());
+
+                participant.setParticipantListener(participantListener());
+            }
+
+            @Override
+            public void onFailedToConnectParticipant(Conversation conversation, Participant participant, ConversationException e) {
+                Log.e(TAG, e.getMessage());
+                //conversationStatusTextView.setText("onFailedToConnectParticipant " + participant.getIdentity());
+            }
+
+            @Override
+            public void onParticipantDisconnected(Conversation conversation, Participant participant) {
+                //conversationStatusTextView.setText("onParticipantDisconnected " + participant.getIdentity());
+            }
+
+            @Override
+            public void onConversationEnded(Conversation conversation, ConversationException e) {
+                //conversationStatusTextView.setText("onConversationEnded");
+                reset();
+            }
+        };
+    }
+
+    public static ParticipantListener participantListener() {
+        return new ParticipantListener() {
+            @Override
+            public void onVideoTrackAdded(Conversation conversation, Participant participant, VideoTrack videoTrack) {
+                Log.i(TAG, "onVideoTrackAdded " + participant.getIdentity());
 
 
+            }
+
+            @Override
+            public void onVideoTrackRemoved(Conversation conversation, Participant participant, VideoTrack videoTrack) {
+                Log.i(TAG, "onVideoTrackRemoved " + participant.getIdentity());
+               // conversationStatusTextView.setText("onVideoTrackRemoved " + participant.getIdentity());
+                //participantContainer.removeAllViews();
+
+            }
+
+            @Override
+            public void onAudioTrackAdded(Conversation conversation, Participant participant, AudioTrack audioTrack) {
+                Log.i(TAG, "onAudioTrackAdded " + participant.getIdentity());
+            }
+
+            @Override
+            public void onAudioTrackRemoved(Conversation conversation, Participant participant, AudioTrack audioTrack) {
+                Log.i(TAG, "onAudioTrackRemoved " + participant.getIdentity());
+            }
+
+            @Override
+            public void onTrackEnabled(Conversation conversation, Participant participant, MediaTrack mediaTrack) {
+                Log.i(TAG, "onTrackEnabled " + participant.getIdentity());
+            }
+
+            @Override
+            public void onTrackDisabled(Conversation conversation, Participant participant, MediaTrack mediaTrack) {
+                Log.i(TAG, "onTrackDisabled " + participant.getIdentity());
+            }
+        };
+    }
+
+
+
+    public static void reset(){
+
+        if(conversation != null) {
+            conversation.dispose();
+            conversation = null;
+        }
+        outgoingInvite = null;
+
+
+        int numberOfStates ;
+        for (numberOfStates=fm.getBackStackEntryCount(); numberOfStates>0;numberOfStates--){
+            fm.popBackStack();
+        }
+    }
     private boolean checkPermissionForCameraAndMicrophone(){
         int resultCamera = ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA);
         int resultMic = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO);

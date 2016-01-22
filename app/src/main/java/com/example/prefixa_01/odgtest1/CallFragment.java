@@ -9,12 +9,15 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.twilio.conversations.CameraCapturer;
 import com.twilio.conversations.CameraCapturerFactory;
 import com.twilio.conversations.CapturerErrorListener;
 import com.twilio.conversations.CapturerException;
 import com.twilio.conversations.Conversation;
+import com.twilio.conversations.ConversationCallback;
+import com.twilio.conversations.ConversationException;
 import com.twilio.conversations.LocalMedia;
 import com.twilio.conversations.LocalMediaFactory;
 import com.twilio.conversations.LocalMediaListener;
@@ -23,6 +26,8 @@ import com.twilio.conversations.LocalVideoTrackFactory;
 import com.twilio.conversations.TwilioConversations;
 import com.twilio.conversations.VideoViewRenderer;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -30,6 +35,7 @@ import java.util.UUID;
  */
 public class CallFragment extends Fragment {
     private static final String ARG_CLIENT_ID="client_id";
+    private static final String ARG_IS_CALLING="isCalling";
     private static final String TAG = MainActivity.class.getName();
 
     /*
@@ -53,7 +59,62 @@ public class CallFragment extends Fragment {
         //mCrime = new Crime();
         //UUID crimeId = (UUID) getActivity().getIntent().getSerializableExtra(CrimeActivity.EXTRA_CRIME_ID);
         UUID clientId = (UUID) getArguments().getSerializable(ARG_CLIENT_ID);
+        boolean isCalling = getArguments().getBoolean(ARG_IS_CALLING);
         mClient = ClientLab.get(getActivity()).getClient(clientId);
+
+        if (isCalling){
+            String participant = mClient.getmName();
+            if (!participant.isEmpty() && (MainActivity.conversationsClient != null)) {
+                stopPreview();
+                // Create participants set (we support only one in this example)
+                Set<String> participants = new HashSet<>();
+                participants.add(participant);
+                // Create local media
+                LocalMedia localMedia = setupLocalMedia();
+
+                // Create outgoing invite
+                MainActivity.outgoingInvite = MainActivity.conversationsClient.sendConversationInvite(participants,
+                        localMedia, new ConversationCallback() {
+                            @Override
+                            public void onConversation(Conversation conversation, ConversationException e) {
+                                if (e == null) {
+                                    // Participant has accepted invite, we are in active conversation
+                                    MainActivity.conversation = conversation;
+                                    conversation.setConversationListener(MainActivity.conversationListener());
+                                } else {
+                                    Toast.makeText(getActivity(),"Call Failed",Toast.LENGTH_SHORT).show();
+                                    Log.e(TAG, e.getMessage());
+                                    hangup();
+                                }
+                            }
+                        });
+
+            } else {
+                Toast.makeText(getActivity(),"Invalid Participant",Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "invalid participant call");
+                //conversationStatusTextView.setText("call participant failed");
+            }
+        }else {
+            LocalMedia localMedia = setupLocalMedia();
+
+            MainActivity.receivedInvite.accept(localMedia, new ConversationCallback() {
+                @Override
+                public void onConversation(Conversation conversation, ConversationException e) {
+                    Log.e(TAG, "sendConversationInvite onConversation");
+                    if (e == null) {
+                        MainActivity.conversation = conversation;
+                        conversation.setConversationListener(MainActivity.conversationListener());
+                    } else {
+                        Log.e(TAG, e.getMessage());
+                        hangup();
+                        MainActivity.reset();
+                    }
+                }
+            });
+        }
+
+
+
     }
 
     @Override
@@ -133,9 +194,24 @@ public class CallFragment extends Fragment {
         }
     }
 
-    public static CallFragment newInstance(UUID clientId){
+    private void hangup() {
+        if(MainActivity.conversation != null) {
+            MainActivity.conversation.disconnect();
+        } else if(MainActivity.outgoingInvite != null){
+            MainActivity.outgoingInvite.cancel();
+        }
+        if(participantVideoRenderer != null) {
+            participantVideoRenderer.onPause();
+            participantVideoRenderer = null;
+        }
+        MainActivity.reset();
+    }
+
+
+    public static CallFragment newInstance(UUID clientId, boolean isCalling){
         Bundle args = new Bundle();
         args.putSerializable(ARG_CLIENT_ID, clientId);
+        args.putBoolean(ARG_IS_CALLING,isCalling);
         CallFragment fragment = new CallFragment();
         fragment.setArguments(args);
         return fragment;
