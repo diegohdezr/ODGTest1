@@ -53,8 +53,11 @@ public class ContactDataFragment extends Fragment {
         mCallerIDTextView = (TextView) v.findViewById(R.id.number);
         mNameTextview.setText(mClient.getmName());
         mCallerIDTextView.setText(mClient.getmClientID());
-        mBtn1.setText("Call");
-        mBtn2.setText("Back");
+        mBtn1.setText(R.string.call_button_text);
+        mBtn2.setText(R.string.cancel_button_text);
+        mBtn1.setTextColor(Color.parseColor("#FFFFFF"));
+        mBtn2.setTextColor(Color.parseColor("#FFFFFF"));
+        //mBtn1.setTextSize(5);
         mBtn1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

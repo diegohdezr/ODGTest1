@@ -7,14 +7,14 @@
     android:background="#000000"
     android:clickable="false">
 
-    <FrameLayout
+    <!--<FrameLayout
         android:id="@+id/previewFrameLayout"
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="match_parent"
         android:background="#000000">
 
-    </FrameLayout>
+    </FrameLayout>-->
     <RelativeLayout
         android:id="@+id/localContainer"
         android:layout_width="match_parent"
@@ -29,6 +29,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:layout_gravity="end"
+        android:layout_marginRight="20dp"
         android:gravity="center_vertical"
         android:clickable="false">
 
@@ -62,14 +63,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             tools:text="End"
-            android:focusable="true"
-            android:paddingBottom="10dp"
-            />
-        <Button
-            android:id="@+id/btn_hold_call"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:text="Hold"
             android:focusable="true"
             android:paddingBottom="10dp"
             />

@@ -1,5 +1,6 @@
 package com.example.prefixa_01.odgtest1;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -73,12 +74,20 @@ public class CallFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.fragment_call,container,false);
         mButtonEnd = (Button) view.findViewById(R.id.btn_end_call);
-        mButtonHold = (Button) view.findViewById(R.id.btn_hold_call);
-        mButtonHold.setText("Hold");
-        mButtonEnd.setText("End");
+        //mButtonHold = (Button) view.findViewById(R.id.btn_hold_call);
+        //mButtonHold.setText("Hold");
+        mButtonEnd.setText(R.string.end_button_text);
+        mButtonEnd.setTextColor(Color.parseColor("#FFFFFF"));
         mCallCallerIDTextView = (TextView)view.findViewById(R.id.call_fragment_caller_id_text_view);
         mCallNameTextView = (TextView)view.findViewById(R.id.call_fragment_name_text_view);
 
+        mButtonEnd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MainActivity.conversation.disconnect();
+                MainActivity.reset();
+            }
+        });
 
         localContainer = (ViewGroup)view.findViewById(R.id.localContainer);
         //previewFrameLayout = (FrameLayout) view.findViewById(R.id.previewFrameLayout);
