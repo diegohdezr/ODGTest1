@@ -150,7 +150,7 @@ public class MainActivity extends FragmentActivity{
                             conversationsClient =
                                     TwilioConversations.createConversationsClient(accessManager, conversationsClientListener());
                             // Specify the audio output to use for this conversation client
-                            conversationsClient.setAudioOutput(AudioOutput.SPEAKERPHONE);
+                            conversationsClient.setAudioOutput(AudioOutput.HEADSET);
                             // Initialize the camera capturer and start the camera preview
 
 
