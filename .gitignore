@@ -2,7 +2,7 @@
 /local.properties
 /.idea/workspace.xml
 /.idea/misc.xml
-*.ODGTest1.iml
+*.iml
 /.idea/libraries
 .DS_Store
 /build
