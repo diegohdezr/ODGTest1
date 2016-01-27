@@ -24,8 +24,8 @@ public class ClientLab {
     private ClientLab(Context context){
         mClients = new ArrayList<>();
         Client myclient = new Client();
-        myclient.setmName("unitzsche");
-        myclient.setmClientID("unitzsche");
+        myclient.setmName("JosuePrefixa");
+        myclient.setmClientID("JosuePrefixa");
         mClients.add(myclient);
         for(int i = 1; i<100; i++){
             Client client = new Client();
