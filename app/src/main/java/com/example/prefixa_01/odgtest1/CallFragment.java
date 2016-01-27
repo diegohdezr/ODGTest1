@@ -84,7 +84,7 @@ public class CallFragment extends Fragment {
         mButtonEnd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainActivity.conversation.disconnect();
+                //MainActivity.conversation.disconnect();
                 MainActivity.reset();
             }
         });
