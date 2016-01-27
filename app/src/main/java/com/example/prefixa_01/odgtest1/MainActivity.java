@@ -51,7 +51,7 @@ public class MainActivity extends FragmentActivity{
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
 
-    private static final String ACCESS_TOKEN = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCIsICJjdHkiOiAidHdpbGlvLWZwYTt2PTEifQ.eyJpc3MiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZCIsICJncmFudHMiOiB7InJ0YyI6IHsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6ICJWUzNlZjBlNjEzM2VlMzYyNjIzZDJlMWY4YmI2N2Y4ZTg2In0sICJpZGVudGl0eSI6ICJodWxkYTcyIn0sICJqdGkiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZC0xNDUzOTIxODI5IiwgInN1YiI6ICJBQzgxYzdkZDY5NTk1M2VlOTg3NjVhM2ZkMGNiNzNjNzViIiwgImV4cCI6IDE0NTM5MjU0Mjl9.N0hFpu5IHU_bbTI4siq3QHpgUWRza69q1Hx3WVCN14A";
+    private static final String ACCESS_TOKEN = "eyJhbGciOiAiSFMyNTYiLCAidHlwIjogIkpXVCIsICJjdHkiOiAidHdpbGlvLWZwYTt2PTEifQ.eyJpc3MiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZCIsICJncmFudHMiOiB7InJ0YyI6IHsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6ICJWUzNlZjBlNjEzM2VlMzYyNjIzZDJlMWY4YmI2N2Y4ZTg2In0sICJpZGVudGl0eSI6ICJzdGllZGVtYW5uLnNhbWFudGhhIn0sICJqdGkiOiAiU0szYzAxYmRkNTlkYWJiNjdjMDkwZDAxZGI0MDRkMTViZC0xNDUzOTI3NzY0IiwgInN1YiI6ICJBQzgxYzdkZDY5NTk1M2VlOTg3NjVhM2ZkMGNiNzNjNzViIiwgImV4cCI6IDE0NTM5MzEzNjR9.Iyq2cLBTvxOdCGVdCH00tYxVAff1tDp7Ct5LZG6wK7I";
 
     /*
      * Twilio Conversations Client allows a client to create or participate in a conversation.
@@ -311,6 +311,7 @@ public class MainActivity extends FragmentActivity{
     public static void reset(){
 
         if(conversation != null) {
+            conversation.disconnect();
             conversation.dispose();
             conversation = null;
         }
