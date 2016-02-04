@@ -1,21 +1,16 @@
 package com.example.prefixa_01.odgtest1;
 
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
-/**
- * A placeholder fragment containing a simple view.
- */
+
 public class MainActivityFragment extends Fragment {
 
-    //Button mTransparentButton;
     private TextView uNameTextView;
 
     public MainActivityFragment() {
@@ -34,6 +29,7 @@ public class MainActivityFragment extends Fragment {
         if(uNameTextView !=null)
             uNameTextView.setText(MainActivity.UIdentity.getUName());
 
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -41,7 +37,6 @@ public class MainActivityFragment extends Fragment {
                 FragmentTransaction transaction  = getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                Toast.makeText(getActivity(),"click on button transparent", Toast.LENGTH_SHORT).show();
             }
         });
         return v;

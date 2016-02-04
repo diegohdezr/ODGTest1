@@ -16,7 +16,8 @@
         android:textColor="@color/white"
         android:layout_gravity="center_horizontal"
         android:textSize="30dp"
-        tools:text="name"/>
+        tools:text="name"
+        android:enabled="false" />
     <!--<Button
         android:id="@+id/transparent_textview"
         android:layout_width="match_parent"
