@@ -25,18 +25,19 @@ public class JSONTask extends AsyncTask<String,String,String> {
     protected String doInBackground(String... params) {
         HttpURLConnection connection = null;
         BufferedReader reader = null;
+        StringBuffer buffer = null;
         try {
             URL url = new URL(params[0]);
             connection = (HttpURLConnection) url.openConnection();
             connection.connect();
             InputStream stream = connection.getInputStream();
             reader = new BufferedReader(new InputStreamReader(stream));
-            StringBuffer buffer = new StringBuffer();
+            buffer = new StringBuffer();
             String line = "";
             while ((line = reader.readLine())!=null){
                 buffer.append(line);
             }
-            return buffer.toString();
+
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -54,7 +55,7 @@ public class JSONTask extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             }
         }
-        return null;
+        return buffer.toString();
     }
     @Override
     protected void onPostExecute(String result) {
