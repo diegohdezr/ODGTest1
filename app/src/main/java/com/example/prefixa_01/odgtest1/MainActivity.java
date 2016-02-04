@@ -51,8 +51,9 @@ public class MainActivity extends FragmentActivity{
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
 
-    private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5LTE0NTM3NTA1MTAiLCJpc3MiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5Iiwic3ViIjoiQUM4Zjk0MGE0M2Y5ZjdmNmFmYjNjMGIzYjhkNGMwNGE5NSIsIm5iZiI6MTQ1Mzc1MDUxMCwiZXhwIjoxNDUzNzU0MTEwLCJncmFudHMiOnsiaWRlbnRpdHkiOiJKb3N1ZVByZWZpeGEiLCJydGMiOnsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6IlZTOTZiNTFjY2UzMzYwNmEwMTI0ZTA1YzA2YjA5OTM3YmEifX19.SwA-yUOnNwJt-ssvql-4Bw4sFid4NOCpNiY0u1XSMG8";
+    private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5LTE0NTQwMTA2NjMiLCJpc3MiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5Iiwic3ViIjoiQUM4Zjk0MGE0M2Y5ZjdmNmFmYjNjMGIzYjhkNGMwNGE5NSIsIm5iZiI6MTQ1NDAxMDY2MywiZXhwIjoxNDU0MDE0MjYzLCJncmFudHMiOnsiaWRlbnRpdHkiOiJNYW51ZWxHb3RoYW0iLCJydGMiOnsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6IlZTOTZiNTFjY2UzMzYwNmEwMTI0ZTA1YzA2YjA5OTM3YmEifX19.AMD26UZdpkme41XkZagrsDLVptf7aJ6R1uLm9BalAnI";
 
+    public static Identity UIdentity;
     /*
      * Twilio Conversations Client allows a client to create or participate in a conversation.
      */
@@ -80,6 +81,11 @@ public class MainActivity extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        /*
+        * Get the Token and Identity of the user of the app
+        */
+
+
          /*
          * Check camera and microphone permissions. Needed in Android M.
          */
@@ -96,7 +102,7 @@ public class MainActivity extends FragmentActivity{
         /*
          * Initialize the Twilio Conversations SDK
          */
-        initializeTwilioSdk();
+
 
         fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
@@ -106,6 +112,12 @@ public class MainActivity extends FragmentActivity{
         ft.commit();
 
 
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        initializeTwilioSdk();
     }
 
     @Override
@@ -152,7 +164,6 @@ public class MainActivity extends FragmentActivity{
                             // Specify the audio output to use for this conversation client
                             conversationsClient.setAudioOutput(AudioOutput.HEADSET);
                             // Initialize the camera capturer and start the camera preview
-
 
                             // Register to receive incoming invites
                             conversationsClient.listen();
@@ -236,7 +247,7 @@ public class MainActivity extends FragmentActivity{
 
 
     /*
-     * Helper methods
+     ********************************************************************* Helper methods
      */
 
     public static ConversationListener conversationListener() {
@@ -305,8 +316,6 @@ public class MainActivity extends FragmentActivity{
             }
         };
     }
-
-
 
     public static void reset(){
 
