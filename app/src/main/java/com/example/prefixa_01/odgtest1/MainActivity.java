@@ -46,6 +46,11 @@ import com.twilio.conversations.VideoRendererObserver;
 import com.twilio.conversations.VideoTrack;
 import com.twilio.conversations.VideoViewRenderer;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.concurrent.ExecutionException;
+
 public class MainActivity extends FragmentActivity{
     private static final String TAG = MainActivity.class.getName();
 
@@ -87,7 +92,40 @@ public class MainActivity extends FragmentActivity{
         /*
         * Get the Token and Identity of the user of the app
         */
-        new JSONTask().execute("http://f265df59.ngrok.io/token");
+
+        String json;
+        try {
+            json = new JSONTask().execute("http://f265df59.ngrok.io/token").get();
+            //Toast.makeText(this, "json " + json, Toast.LENGTH_LONG).show();
+            JSONObject myJSONO = new JSONObject(json);
+            UIdentity.setUName(myJSONO.getString("identity"));
+            UIdentity.setToken(myJSONO.getString("token"));
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        catch (JSONException je)
+        {
+            je.printStackTrace();
+        }
+
+
+
+        /*
+         * Initialize the Twilio Conversations SDK
+         */
+        initializeTwilioSdk();
+
+        /*
+        *initialize a fragment manager and push the MainActivity fragment onto it
+        */
+        fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MainActivityFragment myFragment = new MainActivityFragment();
+        ft.add(R.id.fragment, myFragment);
+        ft.commit();
+
          /*
          * Check camera and microphone permissions. Needed in Android M.
          */
@@ -108,19 +146,7 @@ public class MainActivity extends FragmentActivity{
     @Override
     public void onStart(){
         super.onStart();
-        /*
-         * Initialize the Twilio Conversations SDK
-         */
-        initializeTwilioSdk();
 
-        /*
-        *initialize a fragment manager and push the MainActivity fragment onto it
-        */
-        fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        MainActivityFragment myFragment = new MainActivityFragment();
-        ft.add(R.id.fragment, myFragment);
-        ft.commit();
     }
 
     private void initializeTwilioSdk(){

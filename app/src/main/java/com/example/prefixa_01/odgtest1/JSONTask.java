@@ -36,18 +36,13 @@ public class JSONTask extends AsyncTask<String,String,String> {
             while ((line = reader.readLine())!=null){
                 buffer.append(line);
             }
-            String jsonString = buffer.toString();
-            JSONObject myJSONO = new JSONObject(jsonString);
-            userID = myJSONO.getString("identity");
-            token = myJSONO.getString("token");
             return buffer.toString();
         } catch (MalformedURLException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        }catch (JSONException je){
-            je.printStackTrace();
-        }finally {
+        }
+        finally {
             if (connection!= null){
                 connection.disconnect();
             }
@@ -64,7 +59,5 @@ public class JSONTask extends AsyncTask<String,String,String> {
     @Override
     protected void onPostExecute(String result) {
         super.onPostExecute(result);
-        MainActivity.UIdentity.setUName(userID);
-        MainActivity.UIdentity.setToken(token);
     }
 }
