@@ -82,10 +82,12 @@ public class MainActivity extends FragmentActivity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        UIdentity = new Identity();
         /*
         * Get the Token and Identity of the user of the app
         */
-        new JSONTask().execute("https://twitter.com/RevistaMarvin/status/694777849312444416");
+        new JSONTask().execute("http://f265df59.ngrok.io/token");
          /*
          * Check camera and microphone permissions. Needed in Android M.
          */
@@ -98,14 +100,7 @@ public class MainActivity extends FragmentActivity{
          */
         setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
-        /*
-        *initialize a fragment manager and push the MainActivity fragment onto it
-        */
-        fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction();
-        MainActivityFragment myFragment = new MainActivityFragment();
-        ft.add(R.id.fragment,myFragment);
-        ft.commit();
+
 
 
     }
@@ -117,6 +112,15 @@ public class MainActivity extends FragmentActivity{
          * Initialize the Twilio Conversations SDK
          */
         initializeTwilioSdk();
+
+        /*
+        *initialize a fragment manager and push the MainActivity fragment onto it
+        */
+        fm = getSupportFragmentManager();
+        FragmentTransaction ft = fm.beginTransaction();
+        MainActivityFragment myFragment = new MainActivityFragment();
+        ft.add(R.id.fragment, myFragment);
+        ft.commit();
     }
 
     private void initializeTwilioSdk(){

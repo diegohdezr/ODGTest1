@@ -16,6 +16,7 @@ import android.widget.Toast;
 public class MainActivityFragment extends Fragment {
 
     //Button mTransparentButton;
+    private TextView uNameTextView;
 
     public MainActivityFragment() {
     }
@@ -27,6 +28,12 @@ public class MainActivityFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_transparent, container, false);
         //mTransparentButton =(Button) v.findViewById(R.id.transparent_textview);
+
+        uNameTextView = (TextView) v.findViewById(R.id.user_name_text_view);
+
+        if(uNameTextView !=null)
+            uNameTextView.setText(MainActivity.UIdentity.getUName());
+
         v.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
