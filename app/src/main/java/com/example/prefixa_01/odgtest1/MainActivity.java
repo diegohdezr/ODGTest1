@@ -50,9 +50,10 @@ public class MainActivity extends FragmentActivity{
     private static final String TAG = MainActivity.class.getName();
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
-
-    private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5LTE0NTQwMTA2NjMiLCJpc3MiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5Iiwic3ViIjoiQUM4Zjk0MGE0M2Y5ZjdmNmFmYjNjMGIzYjhkNGMwNGE5NSIsIm5iZiI6MTQ1NDAxMDY2MywiZXhwIjoxNDU0MDE0MjYzLCJncmFudHMiOnsiaWRlbnRpdHkiOiJNYW51ZWxHb3RoYW0iLCJydGMiOnsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6IlZTOTZiNTFjY2UzMzYwNmEwMTI0ZTA1YzA2YjA5OTM3YmEifX19.AMD26UZdpkme41XkZagrsDLVptf7aJ6R1uLm9BalAnI";
-
+    /*
+    * Token used to Initialize the TwilioSDK
+    */
+    //private static final String ACCESS_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImN0eSI6InR3aWxpby1mcGE7dj0xIn0.eyJqdGkiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5LTE0NTQwMTA2NjMiLCJpc3MiOiJTSzY4OTg1Y2E1MDE2YmFhN2VmZWExNjZkYTMyMzA1MTg5Iiwic3ViIjoiQUM4Zjk0MGE0M2Y5ZjdmNmFmYjNjMGIzYjhkNGMwNGE5NSIsIm5iZiI6MTQ1NDAxMDY2MywiZXhwIjoxNDU0MDE0MjYzLCJncmFudHMiOnsiaWRlbnRpdHkiOiJNYW51ZWxHb3RoYW0iLCJydGMiOnsiY29uZmlndXJhdGlvbl9wcm9maWxlX3NpZCI6IlZTOTZiNTFjY2UzMzYwNmEwMTI0ZTA1YzA2YjA5OTM3YmEifX19.AMD26UZdpkme41XkZagrsDLVptf7aJ6R1uLm9BalAnI";
     public static Identity UIdentity;
     /*
      * Twilio Conversations Client allows a client to create or participate in a conversation.
@@ -84,8 +85,7 @@ public class MainActivity extends FragmentActivity{
         /*
         * Get the Token and Identity of the user of the app
         */
-
-
+        new JSONTask().execute("https://twitter.com/RevistaMarvin/status/694777849312444416");
          /*
          * Check camera and microphone permissions. Needed in Android M.
          */
@@ -93,20 +93,16 @@ public class MainActivity extends FragmentActivity{
             requestPermissionForCameraAndMicrophone();
         }
 
-
-                /*
+        /*
          * Enable changing the volume using the up/down keys during a conversation
          */
         setVolumeControlStream(AudioManager.STREAM_VOICE_CALL);
 
         /*
-         * Initialize the Twilio Conversations SDK
-         */
-
-
+        *initialize a fragment manager and push the MainActivity fragment onto it
+        */
         fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-
         MainActivityFragment myFragment = new MainActivityFragment();
         ft.add(R.id.fragment,myFragment);
         ft.commit();
@@ -117,29 +113,10 @@ public class MainActivity extends FragmentActivity{
     @Override
     public void onStart(){
         super.onStart();
+        /*
+         * Initialize the Twilio Conversations SDK
+         */
         initializeTwilioSdk();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void initializeTwilioSdk(){
@@ -158,7 +135,7 @@ public class MainActivity extends FragmentActivity{
 
                             // The TwilioAccessManager manages the lifetime of the access token and notifies the client of token expirations.
                             accessManager =
-                                    TwilioAccessManagerFactory.createAccessManager(ACCESS_TOKEN, accessManagerListener());
+                                    TwilioAccessManagerFactory.createAccessManager(UIdentity.getToken(), accessManagerListener());
                             conversationsClient =
                                     TwilioConversations.createConversationsClient(accessManager, conversationsClientListener());
                             // Specify the audio output to use for this conversation client
@@ -223,7 +200,6 @@ public class MainActivity extends FragmentActivity{
         };
     }
 
-
     private TwilioAccessManagerListener accessManagerListener() {
         return new TwilioAccessManagerListener() {
             @Override
@@ -244,11 +220,6 @@ public class MainActivity extends FragmentActivity{
             }
         };
     }
-
-
-    /*
-     ********************************************************************* Helper methods
-     */
 
     public static ConversationListener conversationListener() {
         return new ConversationListener() {
@@ -290,7 +261,7 @@ public class MainActivity extends FragmentActivity{
             @Override
             public void onVideoTrackRemoved(Conversation conversation, Participant participant, VideoTrack videoTrack) {
                 Log.i(TAG, "onVideoTrackRemoved " + participant.getIdentity());
-               // conversationStatusTextView.setText("onVideoTrackRemoved " + participant.getIdentity());
+                // conversationStatusTextView.setText("onVideoTrackRemoved " + participant.getIdentity());
                 //participantContainer.removeAllViews();
 
             }
@@ -316,6 +287,10 @@ public class MainActivity extends FragmentActivity{
             }
         };
     }
+
+    /*
+     ********************************************************************* Helper methods
+     */
 
     public static void reset(){
 
