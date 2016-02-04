@@ -37,6 +37,7 @@ public class JSONTask extends AsyncTask<String,String,String> {
             while ((line = reader.readLine())!=null){
                 buffer.append(line);
             }
+            return buffer.toString();
 
         } catch (MalformedURLException e) {
             e.printStackTrace();
@@ -55,7 +56,7 @@ public class JSONTask extends AsyncTask<String,String,String> {
                 e.printStackTrace();
             }
         }
-        return buffer.toString();
+        return null;
     }
     @Override
     protected void onPostExecute(String result) {
