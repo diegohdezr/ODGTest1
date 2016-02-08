@@ -95,11 +95,12 @@ public class MainActivity extends FragmentActivity{
 
         String json;
         try {
-            json = new JSONTask().execute("http://b98cb78d.ngrok.io/token").get();
+            json = new JSONTask().execute("http://192.168.0.25/video/token.php").get();
             //Toast.makeText(this, "json " + json, Toast.LENGTH_LONG).show();
             JSONObject myJSONO = new JSONObject(json);
             UIdentity.setUName(myJSONO.getString("identity"));
             UIdentity.setToken(myJSONO.getString("token"));
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
