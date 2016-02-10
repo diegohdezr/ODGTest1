@@ -32,8 +32,7 @@ public class MainActivityFragment extends Fragment {
         uNameTextView = (TextView) v.findViewById(R.id.user_name_text_view);
 
         uNameTextView.setText(MainActivity.UIdentity.getUName());
-
-        Toast.makeText(getActivity(), "user " + MainActivity.UIdentity.getUName(), Toast.LENGTH_LONG).show();
+        
 
         v.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -42,7 +41,6 @@ public class MainActivityFragment extends Fragment {
                 FragmentTransaction transaction  = getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment, newFragment);
                 transaction.addToBackStack(null);
                 transaction.commit();
-                Toast.makeText(getActivity(),"click on button transparent", Toast.LENGTH_SHORT).show();
             }
         });
         return v;

@@ -1,6 +1,8 @@
 package com.example.prefixa_01.odgtest1;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.os.Bundle;
@@ -88,6 +90,8 @@ public class MainActivity extends FragmentActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
+
         UIdentity = new Identity();
         /*
         * Get the Token and Identity of the user of the app
@@ -95,8 +99,7 @@ public class MainActivity extends FragmentActivity{
 
         String json;
         try {
-            json = new JSONTask().execute("http://192.168.0.25/video/token.php").get();
-            //Toast.makeText(this, "json " + json, Toast.LENGTH_LONG).show();
+            json = new JSONTask().execute("http://192.168.0.36/GothamProject/token.php").get();
             JSONObject myJSONO = new JSONObject(json);
             UIdentity.setUName(myJSONO.getString("identity"));
             UIdentity.setToken(myJSONO.getString("token"));
@@ -144,11 +147,6 @@ public class MainActivity extends FragmentActivity{
 
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-
-    }
 
     private void initializeTwilioSdk(){
         TwilioConversations.setLogLevel(TwilioConversations.LogLevel.DEBUG);
@@ -322,6 +320,16 @@ public class MainActivity extends FragmentActivity{
     /*
      ********************************************************************* Helper methods
      */
+
+    // Method to start the service
+    public void startService(Context context) {
+        startService(new Intent(context, DataService.class));
+    }
+
+    // Method to stop the service
+    public void stopService(Context context) {
+        stopService(new Intent(context, DataService.class));
+    }
 
     public static void reset(){
 
