@@ -15,12 +15,26 @@
         android:background="#000000">
 
     </FrameLayout>-->
-    <RelativeLayout
-        android:id="@+id/localContainer"
-        android:visibility="invisible"
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1" />
+        android:layout_weight="1">
+
+        <RelativeLayout
+            android:id="@+id/localContainer"
+            android:visibility="invisible"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <com.example.prefixa_01.odgtest1.CanvasView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/canvas_view"/>
+
+    </FrameLayout>
+
 
 
 

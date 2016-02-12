@@ -32,7 +32,6 @@ public class MainActivityFragment extends Fragment {
         uNameTextView = (TextView) v.findViewById(R.id.user_name_text_view);
 
         uNameTextView.setText(MainActivity.UIdentity.getUName());
-        
 
         v.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -48,12 +48,19 @@ import com.twilio.conversations.VideoRendererObserver;
 import com.twilio.conversations.VideoTrack;
 import com.twilio.conversations.VideoViewRenderer;
 
+import org.java_websocket.client.WebSocketClient;
+import org.java_websocket.handshake.ServerHandshake;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.ExecutionException;
 
 public class MainActivity extends FragmentActivity{
+
+
     private static final String TAG = MainActivity.class.getName();
 
     private static final int CAMERA_MIC_PERMISSION_REQUEST_CODE = 1;
@@ -92,6 +99,8 @@ public class MainActivity extends FragmentActivity{
 
 
 
+
+
         UIdentity = new Identity();
         /*
         * Get the Token and Identity of the user of the app
@@ -103,6 +112,9 @@ public class MainActivity extends FragmentActivity{
             JSONObject myJSONO = new JSONObject(json);
             UIdentity.setUName(myJSONO.getString("identity"));
             UIdentity.setToken(myJSONO.getString("token"));
+            Toast.makeText(getApplicationContext(),
+                    UIdentity.getToken().toString(), Toast.LENGTH_SHORT).show();
+
 
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -120,6 +132,9 @@ public class MainActivity extends FragmentActivity{
          * Initialize the Twilio Conversations SDK
          */
         initializeTwilioSdk();
+
+
+
 
         /*
         *initialize a fragment manager and push the MainActivity fragment onto it
@@ -321,15 +336,6 @@ public class MainActivity extends FragmentActivity{
      ********************************************************************* Helper methods
      */
 
-    // Method to start the service
-    public void startService(Context context) {
-        startService(new Intent(context, DataService.class));
-    }
-
-    // Method to stop the service
-    public void stopService(Context context) {
-        stopService(new Intent(context, DataService.class));
-    }
 
     public static void reset(){
 
