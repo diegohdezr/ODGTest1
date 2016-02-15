@@ -305,6 +305,9 @@ public class CallFragment extends Fragment {
             JSONObject data;
             JSONObject color;
             JSONArray points;
+            JSONArray windows;
+            double windowWidth;
+            double windowHeight;
             double point1;
             double point2;
             double point3;
@@ -333,6 +336,7 @@ public class CallFragment extends Fragment {
                         Log.i("Websocket", "drawCircle ");
                         data = json.getJSONObject("data");
                         points = data.getJSONArray("points");
+                        windows = data.getJSONArray("originWindow");
 
                         point1 = points.getDouble(0);
                         point2 = points.getDouble(1);
@@ -341,11 +345,14 @@ public class CallFragment extends Fragment {
                         a = point1 - point3;
                         b = point2 - point4;
 
+                        windowWidth = windows.getDouble(0);
+                        windowHeight = windows.getDouble(1);
+
                         //Log.i("Websocket", color.toString());
                         //Log.i("Websocket", "drawCircle 2");
 
-                        circle.setX(point1);
-                        circle.setY(point2);
+                        circle.setX((customCanvas.getWidth()*point1)/windowWidth);
+                        circle.setY((customCanvas.getHeight()*point2)/windowHeight);
                         circle.setRadius(Math.sqrt((a*a)+(b*b)));
 
                     }

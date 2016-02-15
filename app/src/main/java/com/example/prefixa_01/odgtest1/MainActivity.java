@@ -108,12 +108,10 @@ public class MainActivity extends FragmentActivity{
 
         String json;
         try {
-            json = new JSONTask().execute("http://192.168.0.36/GothamProject/token.php").get();
+            json = new JSONTask().execute("http://177.227.224.219/GothamProject/token.php").get();
             JSONObject myJSONO = new JSONObject(json);
             UIdentity.setUName(myJSONO.getString("identity"));
             UIdentity.setToken(myJSONO.getString("token"));
-            Toast.makeText(getApplicationContext(),
-                    UIdentity.getToken().toString(), Toast.LENGTH_SHORT).show();
 
 
         } catch (InterruptedException e) {
